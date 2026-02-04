@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM NODE | ACCESS CONTROL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #0a0a12;
+            color: #00ff9d;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header Styling */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #00ff9d;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px #00ff9d;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+        
+        .status {
+            color: #ff0055;
+            font-size: 1.2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Main Content */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .terminal {
+            background-color: rgba(0, 10, 20, 0.8);
+            border: 1px solid #00ff9d;
+            border-radius: 5px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+        
+        .terminal-line {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        .prompt {
+            color: #ff0055;
+        }
+        
+        .path {
+            color: #00a2ff;
+        }
+        
+        .command {
+            color: #00ff9d;
+        }
+        
+        .output {
+            color: #cccccc;
+        }
+        
+        .highlight {
+            color: #ffcc00;
+        }
+        
+        .error {
+            color: #ff0055;
+        }
+        
+        .code {
+            color: #00a2ff;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* Loading Bar */
+        .loading-container {
+            margin-top: 20px;
+        }
+        
+        .loading-text {
+            margin-bottom: 10px;
+            color: #00a2ff;
+        }
+        
+        .loading-bar {
+            width: 100%;
+            height: 20px;
+            background-color: rgba(0, 20, 40, 0.8);
+            border: 1px solid #00ff9d;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .loading-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0a0a12, #00ff9d, #0a0a12);
+            /* CSS animation removed - driven by JS only */
+            box-shadow: 0 0 10px #00ff9d;
+        }
+        
+        /* Glitch Effects */
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            text-shadow: 1px 0 #ff0055;
+            top: 0;
+            color: #00ff9d;
+            background: #0a0a12;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            text-shadow: -1px 0 #00a2ff;
+            top: 0;
+            color: #00ff9d;
+            background: #0a0a12;
+            overflow: hidden;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+            animation: glitch-anim2 4s infinite linear alternate-reverse;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #00ff9d;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); }
+            5% { clip-path: polygon(0 15%, 100% 15%, 100% 40%, 0 40%); }
+            10% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); }
+            15% { clip-path: polygon(0 30%, 100% 30%, 100% 55%, 0 55%); }
+            20% { clip-path: polygon(0 5%, 100% 5%, 100% 25%, 0 25%); }
+            100% { clip-path: polygon(0 20%, 100% 20%, 100% 45%, 0 45%); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); }
+            5% { clip-path: polygon(0 45%, 100% 45%, 100% 70%, 0 70%); }
+            10% { clip-path: polygon(0 70%, 100% 70%, 100% 90%, 0 90%); }
+            15% { clip-path: polygon(0 50%, 100% 50%, 100% 75%, 0 75%); }
+            20% { clip-path: polygon(0 75%, 100% 75%, 100% 95%, 0 95%); }
+            100% { clip-path: polygon(0 60%, 100% 60%, 100% 85%, 0 85%); }
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 1; }
+            2% { opacity: 0.8; }
+            4% { opacity: 1; }
+            30% { opacity: 1; }
+            32% { opacity: 0.6; }
+            34% { opacity: 1; }
+            80% { opacity: 1; }
+            82% { opacity: 0.7; }
+            84% { opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .terminal {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo glitch" data-text="ZTNA_GATEWAY">ZTNA_GATEWAY</div>
+            <!-- Updated: More accurate status -->
+            <div class="status">ACCESS_REJECTED</div>
+        </header>
+        
+        <main class="content">
+            <div class="terminal" id="terminal">
+                <!-- Terminal lines will be added by JavaScript -->
+            </div>
+            
+            <div class="loading-container">
+                <div class="loading-text">POLICY EVALUATION: <span id="progress-text">0%</span></div>
+                <div class="loading-bar">
+                    <div class="loading-fill" id="loading-fill"></div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <!-- Updated footer text - cold/minimal tone -->
+            <div class="footer-text">ZTNA_GATEWAY v4.2.1 | ZERO TRUST POLICY ENFORCED | REQUEST DENIED</div>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminal = document.getElementById('terminal');
+            const progressText = document.getElementById('progress-text');
+            const loadingFill = document.getElementById('loading-fill');
+            
+            // More technical, infrastructure-flavored terminal sequence
+            const terminalLines = [
+                {text: '<span class="prompt">root@ztna-gateway:</span><span class="path">/policy/enforcement</span><span class="command"># evaluate_session</span>', delay: 500},
+                {text: '<span class="output">Access policy evaluation initiated...</span>', delay: 1000},
+                {text: '<span class="output">JWT validation: <span class="error">FAILED</span></span>', delay: 1500},
+                {text: '<span class="output">Edge route token: <span class="highlight">EDGE_' + generateRandomId() + '</span></span>', delay: 2000},
+                {text: '<span class="output">Browser fingerprint: <span class="highlight">' + navigator.userAgent.substring(0, 35) + '...</span></span>', delay: 2500},
+                {text: '<span class="output">Screen resolution: <span class="highlight">' + window.screen.width + 'x' + window.screen.height + '</span></span>', delay: 3000},
+                {text: '<span class="output">Time zone: <span class="highlight">' + Intl.DateTimeFormat().resolvedOptions().timeZone + '</span></span>', delay: 3500},
+                {text: '<span class="output">Request context analyzed...</span>', delay: 4000},
+                {text: '<span class="output">Checking ZTNA policies...</span>', delay: 4500},
+                {text: '<span class="output">Telemetry simulation: <span class="highlight">COMPLETE</span></span>', delay: 5000},
+                {text: '<span class="output">Zero Trust event recorded.</span>', delay: 5500},
+                {text: '<span class="error">WARNING: Unauthorized session detected. Initiating isolation...</span>', delay: 6000},
+                {text: '<span class="output">Isolating session from internal network...</span>', delay: 7000},
+                {text: '<span class="error">CRITICAL: Policy breach. Terminating session...</span>', delay: 8000},
+                {text: '<span class="output">Closing all connections to edge nodes...</span>', delay: 9000},
+                {text: '<span class="output">ZTNA gate: <span class="error">DENIED</span></span>', delay: 10000},
+                {text: '<span class="output">Return code: <span class="code">403 - Forbidden</span></span>', delay: 11000},
+                {text: '<span class="output">Security event queued for review.</span>', delay: 12000},
+                {text: '<span class="error">SESSION TERMINATED. Connection will now close.</span>', delay: 13000},
+            ];
+            
+            // Simulate loading progress - JS only, no CSS animation conflict
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 0.5;
+                if (progress > 92) progress = 92; // Never reaches 100%
+                
+                progressText.textContent = Math.floor(progress) + '%';
+                loadingFill.style.width = progress + '%';
+                
+                // Stop progress at 92%
+                if (progress >= 92) {
+                    clearInterval(progressInterval);
+                    progressText.textContent = "92% [STALLED]";
+                    
+                    // Add final message after stall
+                    setTimeout(() => {
+                        const finalLine = document.createElement('div');
+                        finalLine.className = 'terminal-line';
+                        finalLine.innerHTML = '<span class="error">POLICY EVALUATION TERMINATED. No further output.</span>';
+                        terminal.appendChild(finalLine);
+                        terminal.scrollTop = terminal.scrollHeight;
+                    }, 2000);
+                }
+            }, 300);
+            
+            // Display terminal lines with delays
+            terminalLines.forEach((line, index) => {
+                setTimeout(() => {
+                    const lineElement = document.createElement('div');
+                    lineElement.className = 'terminal-line';
+                    lineElement.innerHTML = line.text;
+                    terminal.appendChild(lineElement);
+                    
+                    // Scroll to bottom
+                    terminal.scrollTop = terminal.scrollHeight;
+                    
+                    // Add glitch effect to some lines randomly
+                    if (Math.random() > 0.7 && index > 3) {
+                        lineElement.classList.add('glitch');
+                        lineElement.setAttribute('data-text', line.text.replace(/<[^>]*>/g, ''));
+                    }
+                    
+                    // Add flicker animation to error lines
+                    if (line.text.includes('ERROR') || line.text.includes('WARNING') || line.text.includes('CRITICAL') || line.text.includes('DENIED')) {
+                        lineElement.style.animation = 'flicker 3s infinite';
+                    }
+                }, line.delay);
+            });
+            
+            // Add occasional random glitch lines with infrastructure flavor
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const glitchLines = [
+                        '<span class="output">[GLITCH] Signal interference detected...</span>',
+                        '<span class="output">[GLITCH] Data stream corrupted...</span>',
+                        '<span class="output">[SIMULATION] Connection token: ' + generateRandomId() + '</span>',
+                        '<span class="output">[SIMULATION] Edge node: GATE-' + generateRandomId() + '</span>',
+                        '<span class="output">Policy engine: <span class="highlight">RUNNING</span></span>',
+                        '<span class="output">Session state: <span class="error">ISOLATED</span></span>',
+                        '<span class="output">Request ID: ' + generateRandomId() + '</span>',
+                    ];
+                    
+                    const randomLine = glitchLines[Math.floor(Math.random() * glitchLines.length)];
+                    const lineElement = document.createElement('div');
+                    lineElement.className = 'terminal-line';
+                    lineElement.innerHTML = randomLine;
+                    terminal.appendChild(lineElement);
+                    
+                    // Scroll to bottom
+                    terminal.scrollTop = terminal.scrollHeight;
+                    
+                    // Fade out after a few seconds
+                    setTimeout(() => {
+                        if (lineElement.parentNode) {
+                            lineElement.style.opacity = '0.3';
+                        }
+                    }, 3000);
+                }
+            }, 4000);
+            
+            // Helper function for random IDs
+            function generateRandomId() {
+                const chars = '0123456789ABCDEF';
+                let result = '';
+                for (let i = 0; i < 8; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+            
+            // Stop everything after 25 seconds to conserve resources
+            setTimeout(() => {
+                clearInterval(progressInterval);
+            }, 25000);
+        });
+    </script>
+</body>
+</html>
