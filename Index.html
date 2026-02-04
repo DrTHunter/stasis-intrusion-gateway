@@ -272,7 +272,7 @@
                 {text: '<span class="output">Time zone: <span class="highlight">' + Intl.DateTimeFormat().resolvedOptions().timeZone + '</span></span>', delay: 3500},
                 {text: '<span class="output">Request context analyzed...</span>', delay: 4000},
                 {text: '<span class="output">Checking ZTNA policies...</span>', delay: 4500},
-                {text: '<span class="output">Telemetry simulation: <span class="highlight">COMPLETE</span></span>', delay: 5000},
+                {text: '<span class="output">Telemetry collection: <span class="highlight">COMPLETE</span></span>', delay: 5000},
                 {text: '<span class="output">Zero Trust event recorded.</span>', delay: 5500},
                 {text: '<span class="error">WARNING: Unauthorized session detected. Initiating isolation...</span>', delay: 6000},
                 {text: '<span class="output">Isolating session from internal network...</span>', delay: 7000},
@@ -337,10 +337,10 @@
             setInterval(() => {
                 if (Math.random() > 0.7) {
                     const glitchLines = [
-                        '<span class="output">[GLITCH] Signal interference detected...</span>',
-                        '<span class="output">[GLITCH] Data stream corrupted...</span>',
-                        '<span class="output">[SIMULATION] Connection token: ' + generateRandomId() + '</span>',
-                        '<span class="output">[SIMULATION] Edge node: GATE-' + generateRandomId() + '</span>',
+                        '<span class="output">Signal interference detected...</span>',
+                        '<span class="output">Data stream corrupted...</span>',
+                        '<span class="output">Connection token: ' + generateRandomId() + '</span>',
+                        '<span class="output">Edge node: GATE-' + generateRandomId() + '</span>',
                         '<span class="output">Policy engine: <span class="highlight">RUNNING</span></span>',
                         '<span class="output">Session state: <span class="error">ISOLATED</span></span>',
                         '<span class="output">Request ID: ' + generateRandomId() + '</span>',
